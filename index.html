@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+  </head>
+  <style type="text/css">
+    *{
+        background-color: white;
+    }
+    label{
+        color: black;
+    }
+    .principal{
+        display: inline-flex;
+        width: 100%;
+    }
+    
+  </style>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+    crossorigin="anonymous"
+  />
+  <body>
+    <div class="principal" >
+      <form
+        class="row g-3 needs-validation"
+        novalidate
+        style="margin-left: 10px; margin-right: 10px; margin-top: 10px; width: 800px;"
+      >
+        <div class="col-md-4">
+          <label for="validationCustom04" class="form-label"><b>Pais</b></label>
+          <select class="form-select" id="pais" name="pais">
+            <option value="MX">Mexico</option>
+          </select>
+          <label for="validationCustom05" class="form-label"><b>Código Postal</b></label
+          >
+          <input type="text" class="form-control" id="cp" required name="cp" />
+
+          <label for="validationCustom04" class="form-label"><b>Estado</b></label>
+          <select class="form-select" id="estado" name="estado"></select>
+
+          <label for="validationCustom04" class="form-label"><b>Municipio</b></label>
+          <select
+            class="form-select"
+            id="municipio"
+            required
+            name="municipio"
+          ></select>
+
+          <label for="validationCustom04" class="form-label"><b>Localidad</b></label>
+          <select
+            class="form-select"
+            id="localidad"
+            required
+            name="localidad"
+          ></select>
+
+
+          <label for="validationCustom04" class="form-label"><b>Georeferencia</b></label
+          >
+          <select
+            class="form-select"
+            id="georeferencia"
+            required
+            name="georeferencia"
+          ></select>
+        </div>
+      </form>
+      
+      <div id="barra" name="Cargandp" style="text-align: center">
+        <img src="barra.gif" width="300" height="225"/>
+      </div>
+    </div>
+
+    <script
+      src="https://code.jquery.com/jquery-3.6.1.min.js"
+      integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
+      crossorigin="anonymous"
+    ></script>
+
+    <script type="text/javascript">
+      $("#barra").hide();
+
+      $("#cp").blur(function (e) {
+        $.ajax({
+          type: "GET",
+          url:
+            "https://data.opendatasoft.com/api/records/1.0/search/?dataset=geonames-postal-code%40public&q=" +
+            $(this).val() +
+            "&facet=country_code&facet=admin_name1&facet=admin_code1&facet=admin_name2&refine.country_code=MX ",
+          
+          dataType: "json",
+          beforeSend: function () {
+            $("#barra").show();
+          },
+          complete: function () {
+            $("#barra").hide();
+          },
+          success: function (data) {
+            console.log(data);
+            $("#estado").empty();
+            $.each(data.records, function (i, item) {
+              $("#estado").prepend(
+                '<option value="' +
+                  item.fields.admin_name1 +
+                  '">' +
+                  item.fields.admin_name1 +
+                  "</option>"
+              );
+              $("#municipio").empty();
+              $("#municipio").prepend(
+                '<option value="' +
+                  item.fields.admin_name2 +
+                  '">' +
+                  item.fields.admin_name2 +
+                  "</option>"
+              );
+              $("#localidad").empty();
+              $("#localidad").prepend(
+                '<option value="' +
+                  item.fields.admin_name +
+                  '">' +
+                  item.fields.place_name +
+                  "</option>"
+              );
+
+              $("#georeferencia").empty();
+
+              $("#georeferencia").prepend(
+                '<option value="' +
+                  item.fields.coordinates +
+                  '">' +
+                  item.fields.coordinates +
+                  "</option>"
+              );
+            });
+          }, //End of AJAX Success function
+        });
+      });
+
+    </script>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+      integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js"
+      integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk"
+      crossorigin="anonymous"
+    ></script>
+    
+    <script src="http://maps.google.com/maps/api/js?sensor=false&callback=iniciar">
+    </script>
+
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15204666.783852223!2d-104.81421511321399!3d21.504709531704677!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x84043a3b88685353%3A0xed64b4be6b099811!2zTcOpeGljbw!5e0!3m2!1ses-419!2smx!4v1668961102572!5m2!1ses-419!2smx" 
+      width="600" height="450" style="border:0;"
+      loading="lazy" referrerpolicy="no-referrer-when-downgrade" valuel="georeferencia"></iframe>
+    
+    <script>
+    function iniciar() {
+    var mapOptions = {
+    center: new google.maps.LatLng(25.80, -80.30),
+    zoom: 10,
+    mapTypeId: google.maps.MapTypeId.ROADMAP};
+    var map = new google.maps.Map(document.getElementById("map"),mapOptions);}		
+    </script>
+    
+    <div id="map"></div>
+    
+  </body>
+</html>
